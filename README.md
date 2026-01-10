@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
   <meta charset="UTF-8" />
-  <title>Fortune</title>
+  <title>Fortune Cookie</title>
   <style>
     body {
       margin: 0;
@@ -12,34 +12,86 @@
       align-items: center;
       background: #fef6f0;
       font-family: "Georgia", serif;
-      text-align: center;
+      overflow: hidden;
     }
 
-    .fortune {
-      font-size: 1.6rem;
-      max-width: 320px;
+    .cookie-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+    }
+
+    /* Cookie stykker */
+    .cookie-left,
+    .cookie-right {
+      position: absolute;
+      top: 0;
+      width: 100px;
+      height: 100px;
+      background: #d4a15b;
+      border-radius: 50%;
+      transform-origin: center bottom;
+      box-shadow: inset -3px -3px 5px rgba(0,0,0,0.2);
+    }
+
+    .cookie-left { left: 0; }
+    .cookie-right { right: 0; }
+
+    /* Cookie animation */
+    .crack .cookie-left {
+      animation: leftCrack 1s forwards;
+    }
+    .crack .cookie-right {
+      animation: rightCrack 1s forwards;
+    }
+
+    @keyframes leftCrack {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(-45deg) translateX(-20px) translateY(20px); }
+    }
+
+    @keyframes rightCrack {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(45deg) translateX(20px) translateY(20px); }
+    }
+
+    /* Paper with fortune */
+    .fortune-paper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 180px;
+      padding: 15px;
+      background: #fff9e6;
+      background-image: repeating-linear-gradient(white, white 4px, #eee 4px, #eee 5px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      border: 1px solid #e0d4b0;
+      border-radius: 4px;
+      transform: translate(-50%, -50%) scale(0);
       opacity: 0;
-      transform: scale(0.9);
-      animation: appear 1s ease forwards;
-      line-height: 1.5;
-      padding: 20px;
-      border: 2px solid #f1c40f;
-      border-radius: 12px;
-      background: #fffbea;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      font-size: 1.2rem;
+      line-height: 1.4;
     }
 
-    @keyframes appear {
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+    .crack .fortune-paper {
+      animation: showPaper 1s 1s forwards;
+    }
+
+    @keyframes showPaper {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      60% { transform: translate(-50%, -60%) scale(1.1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
     }
   </style>
 </head>
 <body>
 
-  <div class="fortune" id="fortune"></div>
+  <div class="cookie-container" id="cookieContainer">
+    <div class="cookie-left"></div>
+    <div class="cookie-right"></div>
+    <div class="fortune-paper" id="fortuneText"></div>
+  </div>
 
   <script>
     const fortunes = [
@@ -65,9 +117,17 @@
       "Du fortjener alt det gode, der kommer."
     ];
 
-    // Vælg tilfældig fortune
+    // Vælg en tilfældig fortune
     const random = fortunes[Math.floor(Math.random() * fortunes.length)];
-    document.getElementById("fortune").textContent = random;
+
+    // Sæt teksten
+    document.getElementById("fortuneText").textContent = random;
+
+    // Start animation
+    const cookie = document.getElementById("cookieContainer");
+    setTimeout(() => {
+      cookie.classList.add("crack");
+    }, 500); // vent 0.5s før animation
   </script>
 
 </body>
