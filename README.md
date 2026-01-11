@@ -2,48 +2,61 @@
 <html lang="da">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fortune Cookie</title>
 
 <style>
+/* ---------- RESET ---------- */
+* {
+  box-sizing: border-box;
+}
+
+/* ---------- BODY ---------- */
 body {
   margin: 0;
   height: 100vh;
-  background: #fdf6ec;
   display: flex;
   justify-content: center;
   align-items: center;
+  background:
+    repeating-radial-gradient(
+      circle at 0 0,
+      #c43a2f 0,
+      #c43a2f 20px,
+      #a92c23 21px,
+      #a92c23 40px
+    );
   font-family: Georgia, serif;
   overflow: hidden;
 }
 
+/* ---------- SCENE ---------- */
 .scene {
   position: relative;
   width: 360px;
-  height: 360px;
+  height: 420px;
 }
 
-/* COOKIE */
+/* ---------- COOKIE ---------- */
 .cookie {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 180px;
   width: 320px;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   transition: opacity 0.8s ease, transform 1.2s ease;
 }
 
-/* Start state */
 #cookieBroken {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.98);
 }
 
-/* PAPER */
-.paper {
+/* ---------- ROLLED PAPER ---------- */
+.paper-roll {
   position: absolute;
   left: 50%;
-  top: 50%;
-  width: 36px;
+  top: 200px;
+  width: 34px;
   height: 90px;
   background: linear-gradient(
     to right,
@@ -52,25 +65,24 @@ body {
     #fefcea
   );
   border-radius: 18px;
-  transform: translate(-50%, 20px);
+  transform: translateX(-50%) translateY(40px);
   opacity: 0;
-  transition: transform 2.5s ease, opacity 1s ease;
   box-shadow: inset -2px 0 3px rgba(0,0,0,0.25);
+  transition: transform 2.5s ease, opacity 1s ease;
 }
 
-/* Paper slides up */
-.paper.show {
+.paper-roll.show {
   opacity: 1;
-  transform: translate(-50%, -90px);
+  transform: translateX(-50%) translateY(-70px);
 }
 
-/* UNROLLED PAPER */
-.fortune {
+/* ---------- UNROLLED PAPER ---------- */
+.paper {
   position: absolute;
   top: 40px;
   left: 50%;
-  width: 280px;
-  padding: 18px 20px;
+  width: 300px;
+  padding: 22px 20px;
   background:
     repeating-linear-gradient(
       #fffdf3,
@@ -81,23 +93,23 @@ body {
   transform: translateX(-50%) scaleY(0);
   transform-origin: top;
   transition: transform 1.4s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
   text-align: center;
 }
 
-.fortune.show {
+.paper.show {
   transform: translateX(-50%) scaleY(1);
 }
 
-.fortune p {
+.paper p {
   margin: 0;
-  font-size: 1.2rem;
-  line-height: 1.4;
+  font-size: 1.25rem;
+  line-height: 1.45;
   opacity: 0;
   transition: opacity 1s ease;
 }
 
-.fortune.show p {
+.paper.show p {
   opacity: 1;
 }
 </style>
@@ -107,23 +119,19 @@ body {
 
 <div class="scene">
 
-  <!-- HEL COOKIE -->
   <img src="cookie-whole.svg"
-       id="cookieWhole"
        class="cookie"
+       id="cookieWhole"
        alt="Fortune cookie">
 
-  <!-- KNÆKKET COOKIE -->
-  <img src="cookie-broken.svg"
-       id="cookieBroken"
+  <img src="cookie-broken.png"
        class="cookie"
+       id="cookieBroken"
        alt="Broken fortune cookie">
 
-  <!-- RULLET PAPIR -->
-  <div class="paper" id="paper"></div>
+  <div class="paper-roll" id="paperRoll"></div>
 
-  <!-- PAPIR MED TEKST -->
-  <div class="fortune" id="fortune">
+  <div class="paper" id="paper">
     <p id="fortuneText"></p>
   </div>
 
@@ -153,24 +161,22 @@ const fortunes = [
   "Du fortjener alt det gode, der kommer."
 ];
 
-// Random fortune
+// vælg fortune
 document.getElementById("fortuneText").textContent =
   fortunes[Math.floor(Math.random() * fortunes.length)];
 
-// 1. Crack cookie
+// animation sequence
 setTimeout(() => {
   document.getElementById("cookieWhole").style.opacity = 0;
   document.getElementById("cookieBroken").style.opacity = 1;
 }, 900);
 
-// 2. Paper slides up (rolled)
+setTimeout(() => {
+  document.getElementById("paperRoll").classList.add("show");
+}, 1600);
+
 setTimeout(() => {
   document.getElementById("paper").classList.add("show");
-}, 1700);
-
-// 3. Paper unrolls
-setTimeout(() => {
-  document.getElementById("fortune").classList.add("show");
 }, 3200);
 </script>
 
