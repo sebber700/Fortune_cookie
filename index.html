@@ -16,93 +16,89 @@ body {
   overflow: hidden;
 }
 
-/* Container */
 .scene {
   position: relative;
-  width: 260px;
-  height: 260px;
+  width: 360px;
+  height: 360px;
 }
 
 /* COOKIE */
 .cookie {
   position: absolute;
-  bottom: 60px;
   left: 50%;
-  width: 180px;
-  height: 90px;
-  background: #d8a15d;
-  border-radius: 0 0 120px 120px;
-  transform: translateX(-50%);
-  box-shadow:
-    inset 0 -6px 8px rgba(0,0,0,0.2),
-    0 8px 10px rgba(0,0,0,0.15);
-  transform-origin: center bottom;
-  animation: crack 1.2s ease forwards;
-  animation-delay: 0.8s;
+  top: 50%;
+  width: 320px;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.8s ease, transform 1.2s ease;
 }
 
-@keyframes crack {
-  0% { transform: translateX(-50%) rotate(0deg); }
-  100% { transform: translateX(-50%) rotate(-12deg); }
+/* Start state */
+#cookieBroken {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.98);
 }
 
-/* PAPER (ROLLED) */
+/* PAPER */
 .paper {
   position: absolute;
-  bottom: 90px;
   left: 50%;
-  width: 22px;
-  height: 60px;
+  top: 50%;
+  width: 36px;
+  height: 90px;
   background: linear-gradient(
     to right,
     #fefcea,
-    #e8e1c8,
+    #e6dfc8,
     #fefcea
   );
-  border-radius: 12px;
-  transform: translateX(-50%) scaleY(0);
-  transform-origin: bottom;
+  border-radius: 18px;
+  transform: translate(-50%, 20px);
+  opacity: 0;
+  transition: transform 2.5s ease, opacity 1s ease;
   box-shadow: inset -2px 0 3px rgba(0,0,0,0.25);
-  animation: paperUp 2s ease forwards;
-  animation-delay: 1.6s;
 }
 
-/* UNROLL */
-.paper.open {
-  width: 200px;
-  height: auto;
-  padding: 16px 18px;
-  border-radius: 4px;
+/* Paper slides up */
+.paper.show {
+  opacity: 1;
+  transform: translate(-50%, -90px);
+}
+
+/* UNROLLED PAPER */
+.fortune {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  width: 280px;
+  padding: 18px 20px;
   background:
     repeating-linear-gradient(
       #fffdf3,
       #fffdf3 4px,
       #f1ecd8 5px
     );
+  border-radius: 4px;
+  transform: translateX(-50%) scaleY(0);
+  transform-origin: top;
+  transition: transform 1.4s ease;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  transform: translateX(-50%) scaleY(1);
-}
-
-@keyframes paperUp {
-  0% { transform: translateX(-50%) scaleY(0); }
-  100% { transform: translateX(-50%) scaleY(1); }
-}
-
-/* TEXT */
-.fortune {
-  opacity: 0;
-  font-size: 1.2rem;
-  line-height: 1.4;
   text-align: center;
 }
 
-.paper.open .fortune {
-  animation: textFade 1.2s ease forwards;
-  animation-delay: 0.6s;
+.fortune.show {
+  transform: translateX(-50%) scaleY(1);
 }
 
-@keyframes textFade {
-  to { opacity: 1; }
+.fortune p {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.4;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.fortune.show p {
+  opacity: 1;
 }
 </style>
 </head>
@@ -110,10 +106,27 @@ body {
 <body>
 
 <div class="scene">
-  <div class="paper" id="paper">
-    <div class="fortune" id="fortune"></div>
+
+  <!-- HEL COOKIE -->
+  <img src="cookie-whole.svg"
+       id="cookieWhole"
+       class="cookie"
+       alt="Fortune cookie">
+
+  <!-- KNÆKKET COOKIE -->
+  <img src="cookie-broken.svg"
+       id="cookieBroken"
+       class="cookie"
+       alt="Broken fortune cookie">
+
+  <!-- RULLET PAPIR -->
+  <div class="paper" id="paper"></div>
+
+  <!-- PAPIR MED TEKST -->
+  <div class="fortune" id="fortune">
+    <p id="fortuneText"></p>
   </div>
-  <div class="cookie"></div>
+
 </div>
 
 <script>
@@ -141,12 +154,23 @@ const fortunes = [
 ];
 
 // Random fortune
-document.getElementById("fortune").textContent =
+document.getElementById("fortuneText").textContent =
   fortunes[Math.floor(Math.random() * fortunes.length)];
 
-// Unroll paper after slide-up
+// 1. Crack cookie
 setTimeout(() => {
-  document.getElementById("paper").classList.add("open");
+  document.getElementById("cookieWhole").style.opacity = 0;
+  document.getElementById("cookieBroken").style.opacity = 1;
+}, 900);
+
+// 2. Paper slides up (rolled)
+setTimeout(() => {
+  document.getElementById("paper").classList.add("show");
+}, 1700);
+
+// 3. Paper unrolls
+setTimeout(() => {
+  document.getElementById("fortune").classList.add("show");
 }, 3200);
 </script>
 
